@@ -61,8 +61,8 @@ plt.show()
 dejong_recoveries = dejong[dejong['type'] == 'Ball Recovery']
 
 # extract coordinates
-dejong_recoveries['x'] = dejong_recoveries['location'].apply(lambda loc: 0)
-dejong_recoveries['y'] = dejong_recoveries['location'].apply(lambda loc: 1)
+dejong_recoveries['x'] = dejong_recoveries['location'].apply(lambda loc: loc[0])
+dejong_recoveries['y'] = dejong_recoveries['location'].apply(lambda loc: loc[1])
 
 # draw pitch
 fig, ax = pitch.draw(figsize=(12, 8))

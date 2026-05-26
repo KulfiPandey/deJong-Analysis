@@ -121,3 +121,18 @@ plt.title("De Jong - How Deep Did He Play? (19/20 & 20/21)",
 plt.legend()
 plt.tight_layout()
 plt.show()
+
+# ball recoveries across all matches
+dejong_recoveries_all = dejong_all[dejong_all['type'] == 'Ball Recovery']
+
+dejong_recoveries_all['x'] = dejong_recoveries_all['location'].apply(lambda loc: loc[0])
+dejong_recoveries_all['y'] = dejong_recoveries_all['location'].apply(lambda loc: loc[1])
+
+fig, ax = pitch.draw(figsize=(12, 8))
+pitch.scatter(dejong_recoveries_all['x'], dejong_recoveries_all['y'],
+              ax=ax, s=80, color='red', edgecolors='white', alpha=0.7)
+plt.title("De Jong - Ball Recoveries Across 68 La Liga Matches (19/20 & 20/21)",
+          color='white', fontsize=14)
+plt.show()
+
+print(f"Total ball recoveries: {len(dejong_recoveries_all)}")

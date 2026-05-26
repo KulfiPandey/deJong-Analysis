@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frenkie the Phoenix — A Data Story</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --barca-blue: #004D98;
+      --barca-red: #A50044;
+      --gold: #EDBB4A;
+      --bg: #080808;
+      --surface: #111111;
+      --border: #1e1e1e;
+      --text: #e0e0e0;
+      --muted: #777;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 40px;
+      position: relative;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(0,77,152,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(165,0,68,0.08) 0%, transparent 60%);
+    }
+
+    .hero::before {
+      content: '21';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 40vw;
+      color: rgba(255,255,255,0.015);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--barca-red);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 7vw, 96px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: #fff;
+      max-width: 800px;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: clamp(13px, 1.5vw, 16px);
+      color: var(--muted);
+      margin-top: 20px;
+      max-width: 520px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .stat-num span { color: var(--gold); }
+
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* CONTENT */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-tag {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--barca-blue);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 44px);
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 32px;
+    }
+
+    .section p {
+      font-size: 16px;
+      color: #aaa;
+      margin-bottom: 20px;
+      max-width: 680px;
+    }
+
+    .section p strong {
+      color: #ddd;
+      font-weight: 500;
+    }
+
+    /* CALLOUT */
+    .callout {
+      border-left: 3px solid var(--barca-red);
+      padding: 20px 28px;
+      background: rgba(165,0,68,0.05);
+      margin: 36px 0;
+      font-style: italic;
+      color: #ccc;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .callout-blue {
+      border-left-color: var(--barca-blue);
+      background: rgba(0,77,152,0.05);
+    }
+
+    /* VIZ CARD */
+    .viz-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 40px 0;
+    }
+
+    .viz-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .viz-caption {
+      padding: 16px 20px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* KIT CALLOUT */
+    .kit-box {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      background: linear-gradient(135deg, rgba(237,187,74,0.06), rgba(0,77,152,0.06));
+      border: 1px solid rgba(237,187,74,0.15);
+      border-radius: 4px;
+      padding: 28px;
+      margin: 40px 0;
+    }
+
+    .kit-emoji {
+      font-size: 40px;
+      flex-shrink: 0;
+    }
+
+    .kit-text {
+      font-size: 15px;
+      color: #aaa;
+      line-height: 1.7;
+    }
+
+    .kit-text strong { color: var(--gold); }
+
+    /* STAT ROW */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    .stat-cell {
+      background: var(--surface);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .stat-cell .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #fff;
+      display: block;
+    }
+
+    .stat-cell .num.blue { color: var(--barca-blue); }
+    .stat-cell .num.red { color: var(--barca-red); }
+    .stat-cell .num.gold { color: var(--gold); }
+
+    .stat-cell .lbl {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* FOOTER */
+    .footer {
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .footer a {
+      color: var(--barca-blue);
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: var(--gold); }
+
+    /* DIVIDER */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 48px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      color: var(--barca-red);
+      font-size: 18px;
+    }
+
+    /* FADE IN */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag, .hero h1, .hero-sub, .hero-stats {
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero h1    { animation-delay: 0.1s; }
+    .hero-sub   { animation-delay: 0.2s; }
+    .hero-stats { animation-delay: 0.35s; }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="container" style="max-width:900px">
+      <p class="hero-tag">FC Barcelona · La Liga · 2019/20 &amp; 2020/21 · A Data Story</p>
+      <h1>Frenkie<br>the <span>Phoenix</span></h1>
+      <p class="hero-sub">
+        How Frenkie de Jong carried Barcelona through their most chaotic era —
+        and why the numbers tell a story the highlights never showed.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">68<span>.</span></span>
+          <span class="stat-label">La Liga Matches</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">3,946<span>.</span></span>
+          <span class="stat-label">Passes</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">54<span>.</span></span>
+          <span class="stat-label">Times Dispossessed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">12<span>.</span></span>
+          <span class="stat-label">Times Substituted</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Introduction</p>
+      <h2>Why This Project Exists</h2>
+      <p>
+        I started watching football because of a neighbour who used to watch Barcelona matches and play
+        football constantly. Through him, I grew up watching Lionel Messi during his prime years. Even
+        though I was too young to fully understand the tactics, I loved Barcelona's style of football
+        and the highlights I watched on repeat.
+      </p>
+      <p>
+        As I got older, I realised my favourite players were not always the ones scoring goals — but the
+        ones who <strong>controlled the game with intelligence, composure, and game IQ.</strong>
+      </p>
+      <p>
+        During Barcelona's downfall years, when the club was going through tactical and financial chaos
+        and Messi was eventually leaving, I almost stopped watching football regularly. But Frenkie de
+        Jong stood out immediately. The way he carried the ball through pressure, controlled tempo, and
+        made the game look calm and effortless — it made me fall in love with watching football again.
+      </p>
+
+      <div class="kit-box">
+        <div class="kit-emoji">🟡</div>
+        <div class="kit-text">
+          <strong>Even the kits tell the story.</strong> The Rakuten era feels like chaos and nostalgia —
+          Messi, MSN, old Barça royalty. But the yellow Spotify away kit feels like Frenkie.
+          Smooth. Modern. Controlled. Football fans associate kits with eras more than people realise,
+          and this one belongs to the rebuild generation: Pedri, Gavi, De Jong.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Context</p>
+      <h2>Barcelona Was Burning</h2>
+      <p>
+        This project focuses on La Liga matches from the 2019/20 and 2020/21 seasons — two full
+        campaigns that capture the peak of Barcelona's institutional collapse.
+      </p>
+      <p>
+        The club still looked big externally. Messi was still there. Huge names, expensive transfers,
+        massive wages. But internally it was broken — financial disaster, aging squad, tactical confusion,
+        dressing room instability, and a 8–2 humiliation against Bayern Munich that changed the
+        psychological mood of the club forever.
+      </p>
+
+      <div class="callout">
+        "A lot of fans think of pre-8–2 Barça and post-8–2 Barça as different eras entirely. That loss
+        wasn't just a result. It was a signal that something had fundamentally collapsed."
+      </div>
+
+      <p>
+        In the middle of all that chaos, Frenkie de Jong became one of the few players who still brought
+        calmness and control. <strong>Across 68 league matches, he was only substituted 12 times</strong>
+        and had only 4 injury events. Koeman clearly trusted him heavily, and the data shows how essential
+        he was to the structure of the team during those difficult seasons.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-cell">
+          <span class="num blue">68</span>
+          <span class="lbl">Matches Played</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num gold">12</span>
+          <span class="lbl">Times Subbed Off</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num red">4</span>
+          <span class="lbl">Injury Stoppages</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num blue">1</span>
+          <span class="lbl">Recorded Errors</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Visualisation 01</p>
+      <h2>Where He Lived on the Pitch</h2>
+      <p>
+        When I look at De Jong's heatmap across two full seasons, the first thing I notice is how deep
+        he drops to receive the ball. He is constantly involved in buildup and progression instead of
+        waiting higher up for goals or assists. Most of his work comes from helping the team move from
+        defence into attack through carries and intelligent positioning.
+      </p>
+
+      <div class="viz-card">
+        <img src="FrenkiedeJong_1920_2021_heatmap.png" alt="De Jong heatmap across 2019/20 and 2020/21">
+        <p class="viz-caption">Touch heatmap — all La Liga matches, 2019/20 &amp; 2020/21. Yellow = highest activity zones.</p>
+      </div>
+
+      <p>
+        Another detail visible in the heatmap is how he <strong>drifts toward the right side</strong>
+        quite often even though he is usually associated with the left side of midfield. Under Koeman,
+        De Jong had a very free and dynamic role — constantly moving depending on where space was
+        available. You can see how much ground he covers and how active he is across multiple areas
+        of the pitch.
+      </p>
+
+      <div class="callout callout-blue">
+        The yellow zone straddles the halfway line. This is not where a defensive midfielder sits.
+        This is a box-to-box player who gets labelled defensive because he wears the number 6 shirt.
+      </div>
+    </div>
+  </div>
+
+  <!-- PASS CHART -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Visualisation 02</p>
+      <h2>Reliability Under Pressure</h2>
+      <p>
+        The pass chart tells the story of how <strong>consistent</strong> De Jong was, even when
+        Barcelona were not. Midfield is one of the hardest areas on the pitch to maintain possession —
+        players are constantly surrounded and pressed — yet he consistently kept the ball moving
+        calmly under pressure.
+      </p>
+
+      <div class="viz-card">
+        <img src="dejong_passccuracy_chart.png" alt="De Jong pass accuracy and volume per match">
+        <p class="viz-caption">Pass accuracy (%) and total pass volume per match across both seasons. Blue line = accuracy, red bars = volume.</p>
+      </div>
+
+      <p>
+        What stands out even more is that his role was not based on safe sideways passing alone.
+        A huge part of his game involved progressing the ball forward through carries and difficult
+        passes in buildup situations. Despite recording <strong>3,430 carries</strong> across these
+        league matches, he was dispossessed only <strong>54 times</strong> — showing how exceptional
+        he is at escaping pressure and protecting possession.
+      </p>
+
+      <div class="divider"><span>✦</span></div>
+
+      <p>
+        Even during Barcelona's tactical instability, he consistently remained one of the team's most
+        reliable players on the ball. The dips in the chart are real — but they always bounce back.
+        That's not a player struggling. That's a player carrying a struggling team.
+      </p>
+    </div>
+  </div>
+
+  <!-- DEPTH CHART -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Visualisation 03</p>
+      <h2>How Deep Did He Play?</h2>
+      <p>
+        The depth chart shows how flexible and dynamic his role really was. In some matches he drops
+        extremely deep, almost next to the defenders during buildup. In others he pushes much higher
+        to support attacks. His average positioning changes constantly depending on what the team needs.
+      </p>
+
+      <div class="viz-card">
+        <img src="dejong_depth_chart.png" alt="De Jong average x position per match over time">
+        <p class="viz-caption">Average x-position per match over time. The dashed line marks the halfway line (x=60). Above = opponent's half.</p>
+      </div>
+
+      <p>
+        There are noticeable fluctuations throughout the timeline that in many ways reflect
+        Barcelona's instability during those years. Tactical changes, managerial shifts, and the
+        overall chaos around the club clearly affected the team structure.
+      </p>
+
+      <div class="callout">
+        "The chart almost feels symbolic of his Barcelona journey itself — moments of brilliance
+        mixed with instability around him. The line never truly collapses. It just keeps going."
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="container">
+    <div class="section">
+      <p class="section-tag">Conclusion</p>
+      <h2>The Phoenix in the Ashes</h2>
+      <p>
+        Frenkie de Jong is underrated because people judge midfielders through goals and assists.
+        His impact is much more subtle — <strong>controlling tempo, progressing possession, escaping
+        pressure, bringing calmness to the overall structure.</strong> He is the type of midfielder
+        whose influence becomes obvious when you watch the full game instead of only looking at
+        the highlights.
+      </p>
+      <p>
+        He stayed through the humiliation era. Through the Messi exit. Through the financial crisis.
+        Through the transfer rumours and the fan anger and the tactical chaos. And through all of it,
+        he just kept playing football.
+      </p>
+
+      <div class="callout">
+        "While Barcelona collapsed around him, De Jong became one of the few players capable of
+        preserving structure and progressing possession under pressure. During the downfall years,
+        he was one of the few players who still made watching the team enjoyable."
+      </div>
+
+      <p>
+        Frenkie the Phoenix feels fitting. A player who continued to rise through the ashes during
+        one of the club's most difficult eras. Not with goals. Not with assists. But with
+        composure, intelligence, and an almost stubborn refusal to be ordinary.
+      </p>
+
+      <div class="stat-row" style="margin-top:48px">
+        <div class="stat-cell">
+          <span class="num gold">3,946</span>
+          <span class="lbl">Passes</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num blue">93%+</span>
+          <span class="lbl">Avg Pass Accuracy</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num red">3,430</span>
+          <span class="lbl">Carries</span>
+        </div>
+        <div class="stat-cell">
+          <span class="num gold">54</span>
+          <span class="lbl">Times Dispossessed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Data source: StatsBomb Open Data · La Liga 2019/20 &amp; 2020/21</p>
+    <p>Built with Python, mplsoccer, pandas, matplotlib</p>
+    <p style="margin-top:16px">
+      <a href="https://github.com/KulfiPandey/deJong-Analysis" target="_blank">View on GitHub →</a>
+    </p>
+    <p style="margin-top:24px; font-size:12px">K Sai Satvik · 2026</p>
+  </div>
+
+</body>
+</html>
